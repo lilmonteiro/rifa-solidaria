@@ -2,18 +2,20 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const App = () => {
-  const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
   const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [solds, setSolds] = useState([]);
   const [data, setData] = useState([]);
 
   const toggleNumber = (number) => {
-    if (selectedNumbers.includes(number)) {
-      setSelectedNumbers(selectedNumbers.filter((n) => n !== number));
-    } else {
-      setSelectedNumbers([...selectedNumbers, number]);
+    if (solds.includes(number) === false) {
+      if (selectedNumbers.includes(number)) {
+        setSelectedNumbers(selectedNumbers.filter((n) => n !== number));
+      } else {
+        setSelectedNumbers([...selectedNumbers, number]);
+      }
     }
   };
-  // 
+
   const handleSend = () => {
     var numbers = selectedNumbers.toString();
     var urlHead = "https://api.whatsapp.com/send?phone=5511978222863&text=Ol%C3%A1!%20";
@@ -26,7 +28,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchGoogleSheetData = async () => {
-      const apiKey = 'AIzaSyDyPfMfQK5saHAsGQ7A6IiTsy3ecmsfyS8';
+      const apiKey = process.env.REACT_APP_API_KEY;
       const spreadsheetId = '1lE2ZpdCzqrQhYQ1v_iU6h0wqmpKRlbwOC3XoBbpitU4';
       const range = 'A1:B101'; // Update range as needed
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
@@ -46,16 +48,31 @@ const App = () => {
     fetchGoogleSheetData();
   }, []);
 
+  useEffect(() => {
+    try {
+      var list = [];
+      data.forEach((row) => {
+        if (row[1] === "sold") {
+          list.push(row[0])
+        }
+      })
+      setSolds(list);
+    } catch (error) {
+      console.log(error)
+    }
+  }, [data])
+
   return (
     <Container>
       <Header>
         <Title>Concorra a uma AirFryer</Title>
         <Subtitle><span>por 15 reais</span></Subtitle>
       </Header>
+
       <PrizeContainer>
         <PrizeText>
-          <p>Air Fryer MONDIAL</p>
-          <p>Pix: (11) 97822-2863</p>
+          <p>AirFryer MONDIAL / PHILCO</p>
+          <p>Pix: 11978222863</p>
           <p>ITAU - Liandra Monteiro</p>
         </PrizeText>
         <ImagePlaceholder src="/airfriyer.png" />
@@ -69,7 +86,7 @@ const App = () => {
               toggleNumber(row[0]);
             }}
             isSelected={selectedNumbers.includes(row[0])}
-            unavailable={row[1] === "unavailable"}>
+            sold={row[1] === "sold"}>
             {row[0]}
           </NumberBox>
         ))}
@@ -94,7 +111,7 @@ const Header = styled.div`
 
 const Button = styled.div`
   width: 100vw;
-  background-color: ${laranja};
+  background-color: ${azulclaro};
   padding: 20px 20px;
   box-sizing: border-box;
   margin: auto;
@@ -107,6 +124,11 @@ const Button = styled.div`
   color: white;
   bottom: ${props => props.isVisible ? '0%' : '-30%'};
   transition: bottom .5s ease;
+
+  
+  @media screen and (min-width: 1000px){
+    max-width: 400px;
+  }
 `;
 
 const Container = styled.div`
@@ -176,15 +198,19 @@ const NumberBox = styled.a`
     border-radius:50px;
     color: #fff;
   `}
-  ${props => props.unavailable && `
+  ${props => props.sold && `
     background-color: ${laranja};
     color: #fff;
   `}
 
-  &:hover {
-    background-color: ${azulclaro};
-    color: #fff;
+  @media screen and (min-width: 1000px) {
+    
+    &:hover {
+      background-color: ${azulclaro};
+      color: #fff;
+    }
   }
+
 `;
 
 const PrizeContainer = styled.div`
@@ -209,12 +235,6 @@ const PrizeText = styled.div`
   }
 `;
 
-const PrizeTitle = styled.h3`
-  font-size: 18px;
-  box-sizing: border-box;
-  color: white;
-  margin: 0;
-`;
 
 const ImagePlaceholder = styled.div`
   width: 50%;
