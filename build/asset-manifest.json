@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.17e90595.css",
+    "main.js": "/static/js/main.05cf986c.js",
+    "static/media/SergioTrendy.ttf": "/static/media/SergioTrendy.43a3cbe6b2ab4cd34197.ttf",
+    "index.html": "/index.html",
+    "main.17e90595.css.map": "/static/css/main.17e90595.css.map",
+    "main.05cf986c.js.map": "/static/js/main.05cf986c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.17e90595.css",
+    "static/js/main.05cf986c.js"
+  ]
+}
