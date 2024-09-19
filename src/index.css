@@ -5,6 +5,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+}
+
+@font-face {
+  font-family: 'Sergio Trendy';
+  src: url('./SergioTrendy.ttf');
+}
+
+html{
+  width: 100%;
+  background-color: rgb(50, 50, 50);
 }
 
 code {
